@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: spokenlang
+  labels:
+    app: spokenlang
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spokenlang
+  template:
+    metadata:
+      labels:
+        app: spokenlang
+        tier: web
+    spec:
+      containers:
+        - name: spokenlang
+          image: rhps/spokenlang:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+          lifecycle:
+            postStart:
+              exec:
+                command: ["gcsfuse", "-o", "nonempty", "tebengan-data", "/opt/spokenlang/datasets/"]
+            preStop:
+              exec:
+                command: ["fusermount", "-u", "/opt/spokenlang/datasets/"]

@@ -1,0 +1,30 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ["build", "-t", "${_REPO}:${COMMIT_SHA}", "-t", "${_REPO}:latest", "."]
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push',  '${_REPO}:${COMMIT_SHA}']
+
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+  - 'container'
+  - 'clusters'
+  - 'get-credentials'
+  - 'musicaservices'
+  - '--zone'
+  - 'asia-southeast1'
+  - '--project'
+  - 'musica-studio-209408'
+
+- name: ubuntu
+  args: ['bash','-c' ,'sed -e "s/SHA_COMMIT/${COMMIT_SHA}/g" kubernetes/tpl.yml > kubernetes/deployment.yml']
+
+- name: 'gcr.io/cloud-builders/kubectl'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=asia-southeast1'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=musicaservices'
+  args:
+  - 'apply'
+  - '-f'
+  - 'kubernetes/deployment.yml'
+  - '--namespace=tebengandata'
