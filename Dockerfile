@@ -12,4 +12,4 @@ RUN wget https://storage.googleapis.com/kaggle-datasets/35318/47705/spoken-langu
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-ENTRYPOINT ["python", "-u", "main.py"]
+ENTRYPOINT ["python", "-u", "cli.py"]
