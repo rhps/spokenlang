@@ -10,11 +10,11 @@ steps:
   - 'container'
   - 'clusters'
   - 'get-credentials'
-  - 'musicaservices'
+  - 'personalproject'
   - '--zone'
   - 'asia-southeast1'
   - '--project'
-  - 'musica-studio-209408'
+  - 'personalproject-209408'
 
 - name: ubuntu
   args: ['bash','-c' ,'sed -e "s/SHA_COMMIT/${COMMIT_SHA}/g" kubernetes/tpl.yml > kubernetes/deployment.yml']
@@ -22,9 +22,9 @@ steps:
 - name: 'gcr.io/cloud-builders/kubectl'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=asia-southeast1'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=musicaservices'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=personalproject'
   args:
   - 'apply'
   - '-f'
   - 'kubernetes/deployment.yml'
-  - '--namespace=tebengandata'
+  - '--namespace=koinworks'
